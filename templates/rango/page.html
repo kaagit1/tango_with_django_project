@@ -1,14 +1,13 @@
-<!DOCTYPE html>
-{% load staticfiles %}
-<html>
-  <head></head>
-  <title>Rango</title>
+{% extends 'rango/base.html' %}
 
-  <body>
-    {% for page in pages %}
-      <p>title: {{ page.title }}</p>
-      <p>url: {{ page.url }}</p>
-      <p>views: {{ page.views }}</p>
-    {% endfor %}
-  </body>
-</html>
+{% load staticfiles %}
+{% block title_block %}
+  Page
+{% endblock %}
+{% block title_block %}
+  {% for page in pages %}
+    <p>title: {{ page.title }}</p>
+    <p>url: {{ page.url }}</p>
+    <p>views: {{ page.views }}</p>
+  {% endfor %}
+{% endblock %}
