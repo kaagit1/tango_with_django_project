@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html>
+  <head></head>
+  <title>Rango</title>
+
+  <body>
+    {% for page in pages %}
+      <p>title: {{ page.title }}</p>
+      <p>url: {{ page.url }}</p>
+      <p>views: {{ page.views }}</p>
+    {% endfor %}
+  </body>
+</html>
