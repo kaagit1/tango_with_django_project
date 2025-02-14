@@ -135,3 +135,7 @@ STATICFILES_DIRS = [
 MEDIA_ROOT = MEDIA_DIR
 MEDIA_URL = "/media/"
 LOGIN_URL = "rango:login"
+# Session settings
+SESSION_ENGINE = "django.contrib.sessions.backends.db"  # Store sessions in the database
+SESSION_COOKIE_NAME = "sessionid"  # Default session cookie name
+SESSION_COOKIE_AGE = 1209600  # Session expiry time in seconds (2 weeks by default)

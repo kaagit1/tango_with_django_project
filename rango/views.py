@@ -6,6 +6,7 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from datetime import datetime
 
 
 def index(request):
@@ -21,14 +22,50 @@ def index(request):
     context_dict["boldmessage"] = "Crunchy, creamy, cookie, candy, cupcake!"
     context_dict["categories"] = category_list
     context_dict["pages"] = pages_list
+    # Obtain our Response object early so we can add cookie information.
+    visitor_cookie_handler(request)
 
-    # Render the response and send it back!
-    return render(request, "rango/index.html", context=context_dict)
+    response = render(request, "rango/index.html", context=context_dict)
+    # Return response back to the user, updating any cookies that need changed.
+    return response
+
+
+# A helper method
+def get_server_side_cookie(request, cookie, default_val=None):
+    val = request.session.get(cookie)
+    if not val:
+        val = default_val
+    return val
+
+
+def visitor_cookie_handler(request):
+    """
+    Handles the visits counter using cookies.
+    """
+    # Get the number of visits from the session, default to 0 if not set
+    visits = int(request.session.get("visits", 0))
+
+    # Get the last visit time from the session
+    last_visit = request.session.get("last_visit", str(datetime.now()))
+    last_visit_time = datetime.strptime(last_visit, "%Y-%m-%d %H:%M:%S.%f")
+
+    # If more than a day has passed since the last visit, increment the counter
+    if (datetime.now() - last_visit_time).days > 0:
+        visits += 1
+        request.session["last_visit"] = str(datetime.now())
+    if visits == 0:
+        visits = 1
+    # Update the visits counter in the session
+    request.session["visits"] = visits
+    # Save the session
+    request.session.save()
 
 
 def about(request):
     # return HttpResponse('Rango says here is the about page. <a href="/rango">home</a>')
     context_dict = {"name": "khaled"}
+    visitor_cookie_handler(request)
+    context_dict["visits"] = request.session.get("visits", 1)
     return render(request, "rango/about.html", context=context_dict)
 
 
